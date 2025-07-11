@@ -1,219 +1,225 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Verificação de Escolas</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <style>
-        :root {
-            --bg-color: #f2f2f2;
-            --text-color: #000;
-            --container-bg: #fff;
-            --table-header: #f4f4f4;
-            --button-bg: #4CAF50;
-        }
-        body.dark-mode {
-            --bg-color: #121212;
-            --text-color: #eee;
-            --container-bg: #1e1e1e;
-            --table-header: #333;
-            --button-bg: #219653;
-        }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background-color: var(--container-bg);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            max-width: 600px;
-            margin: auto;
-        }
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: var(--container-bg);
-            color: var(--text-color);
-        }
-        button {
-            background-color: var(--button-bg);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover {
-            opacity: 0.9;
-        }
-        .toggle-mode {
-            margin: auto;
-            margin-top: 10px;
-            text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: var(--table-header);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Verificação de Escolas</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg-color: #f0f0f0;
+      --text-color: #111;
+      --container-bg: #fff;
+      --table-header: #eee;
+      --button-bg: #28a745;
+    }
+    body.dark-mode {
+      --bg-color: #121212;
+      --text-color: #f5f5f5;
+      --container-bg: #1e1e1e;
+      --table-header: #333;
+      --button-bg: #2ecc71;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background-color: var(--container-bg);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      max-width: 700px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: var(--container-bg);
+      color: var(--text-color);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 6px;
+      background-color: var(--button-bg);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .toggle-mode {
+      margin-top: 15px;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 40px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: var(--table-header);
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Formulário de Verificação das Escolas</h2>
+  <div class="container">
+    <h2>Formulário de Verificação das Escolas</h2>
 
-        <label for="escola">Nome da Escola:</label>
-        <input type="text" id="escola" placeholder="Digite o nome da escola">
+    <label for="escola">Nome da Escola:</label>
+    <input type="text" id="escola" placeholder="Digite o nome da escola" />
 
-        <label for="sdwan">SD-WAN está ativo?</label>
-        <select id="sdwan">
-            <option value="Sim">Sim</option>
-            <option value="Não">Não</option>
-        </select>
+    <label for="sdwan">SD-WAN está ativo?</label>
+    <select id="sdwan">
+      <option value="Sim">Sim</option>
+      <option value="Não">Não</option>
+    </select>
 
-        <label for="operadora">Operadora do Segundo Link (SD-WAN):</label>
-    <input type="text" id="operadora" placeholder="Ex: Vivo, Claro, etc.">
+    <label for="operadora">Operadora do Segundo Link (SD-WAN):</label>
+    <input type="text" id="operadora" placeholder="Ex: Vivo, Claro, etc." />
 
     <label for="velocidade">Velocidade do Link (Mbps):</label>
-    <input type="number" id="velocidade" placeholder="Ex: 100"> 
+    <input type="number" id="velocidade" placeholder="Ex: 100" />
 
     <label for="fotoRack">Foto do Rack:</label>
-        <input type="file" id="fotoRack" accept="image/*">
+    <input type="file" id="fotoRack" accept="image/*" />
 
-        <label for="precisaAPs">Necessita de APs?</label>
-        <select id="precisaAPs" onchange="toggleQuantidadeAPs()">
-            <option value="Não">Não</option>
-            <option value="Sim">Sim</option>
-        </select>
+    <label for="precisaAPs">Necessita de APs?</label>
+    <select id="precisaAPs" onchange="toggleQuantidadeAPs()">
+      <option value="Não">Não</option>
+      <option value="Sim">Sim</option>
+    </select>
 
-        <div id="quantidadeContainer">
-            <label for="quantidadeAPs">Quantidade de APs:</label>
-            <input type="number" id="quantidadeAPs" min="0" value="0">
-        </div>
+    <label for="quantidadeAPs">Quantidade de APs:</label>
+    <input type="number" id="quantidadeAPs" min="0" value="0" />
 
-        <button onclick="salvarEntrada()">Salvar Entrada</button>
-        <button onclick="exportarExcel()">Exportar para Excel</button>
+    <button onclick="salvarEntrada()">💾 Salvar Entrada</button>
+    <button onclick="exportarExcel()">📤 Exportar para Excel</button>
 
-        <div class="toggle-mode">
-            <button onclick="alternarModo()">Alternar Modo Claro/Escuro 🌙</button>
-        </div>
+    <div class="toggle-mode">
+      <button onclick="alternarModo()">🌓 Alternar Modo Claro/Escuro</button>
     </div>
+  </div>
 
-    <table id="tabelaDados">
-        <thead>
-            <tr>
-                <th>Escola</th>
-                <th>SD-WAN</th>
-                <th>Operadora</th><th>Velocidade (Mbps)</th><th>Foto do Rack</th>
-                <th>Precisa de APs</th>
-                <th>Qtd. APs</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+  <table id="tabelaDados">
+    <thead>
+      <tr>
+        <th>Escola</th>
+        <th>SD-WAN</th>
+        <th>Operadora</th>
+        <th>Velocidade (Mbps)</th>
+        <th>Foto do Rack</th>
+        <th>Precisa de APs</th>
+        <th>Qtd. APs</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <script>
-        const entradas = [];
+  <script>
+    const entradas = [];
 
-        function toggleQuantidadeAPs() {
-            const precisa = document.getElementById("precisaAPs").value;
-            document.getElementById("quantidadeAPs").disabled = (precisa === "Não");
-            if (precisa === "Não") {
-                document.getElementById("quantidadeAPs").value = 0;
-            }
-        }
+    function toggleQuantidadeAPs() {
+      const precisa = document.getElementById("precisaAPs").value;
+      document.getElementById("quantidadeAPs").disabled = precisa === "Não";
+      if (precisa === "Não") {
+        document.getElementById("quantidadeAPs").value = 0;
+      }
+    }
 
-        function salvarEntrada() {
-            const escola = document.getElementById("escola").value;
-            const sdwan = document.getElementById("sdwan").value;
-            const operadora = document.getElementById("operadora").value;
-            const velocidade = document.getElementById("velocidade").value;
-            const precisaAPs = document.getElementById("precisaAPs").value;
-            const quantidadeAPs = document.getElementById("quantidadeAPs").value;
+    function salvarEntrada() {
+      const escola = document.getElementById("escola").value;
+      const sdwan = document.getElementById("sdwan").value;
+      const operadora = document.getElementById("operadora").value;
+      const velocidade = document.getElementById("velocidade").value;
+      const precisaAPs = document.getElementById("precisaAPs").value;
+      const quantidadeAPs = document.getElementById("quantidadeAPs").value;
+      const fotoInput = document.getElementById("fotoRack");
+      const fotoNome = fotoInput.files[0] ? fotoInput.files[0].name : "Sem foto";
 
-            const fotoInput = document.getElementById("fotoRack");
-            const fotoNome = fotoInput.files[0] ? fotoInput.files[0].name : "Sem foto";
+      const novaEntrada = {
+        escola,
+        sdwan,
+        operadora,
+        velocidade,
+        fotoRack: fotoNome,
+        precisaAPs,
+        quantidadeAPs
+      };
 
-            const novaEntrada = {
-                escola,
-                sdwan,
-                operadora,
-                velocidade,
-                fotoRack: fotoNome,
-                escola,
-                sdwan,
-                fotoRack: fotoNome,
-                precisaAPs,
-                quantidadeAPs
-            };
+      entradas.push(novaEntrada);
+      adicionarNaTabela(novaEntrada);
+      limparCampos();
+    }
 
-            entradas.push(novaEntrada);
-            adicionarNaTabela(novaEntrada);
-            limparCampos();
-        }
+    function adicionarNaTabela(entrada) {
+      const tabela = document.getElementById("tabelaDados").getElementsByTagName("tbody")[0];
+      const novaLinha = tabela.insertRow();
 
-        function adicionarNaTabela(entrada) {
-            const tabela = document.getElementById("tabelaDados").getElementsByTagName("tbody")[0];
-            const novaLinha = tabela.insertRow();
+      novaLinha.insertCell(0).innerText = entrada.escola;
+      novaLinha.insertCell(1).innerText = entrada.sdwan;
+      novaLinha.insertCell(2).innerText = entrada.operadora;
+      novaLinha.insertCell(3).innerText = entrada.velocidade;
+      novaLinha.insertCell(4).innerText = entrada.fotoRack;
+      novaLinha.insertCell(5).innerText = entrada.precisaAPs;
+      novaLinha.insertCell(6).innerText = entrada.quantidadeAPs;
+    }
 
-            novaLinha.insertCell(0).innerText = entrada.escola;
-            novaLinha.insertCell(1).innerText = entrada.sdwan;
-            novaLinha.insertCell(2).innerText = entrada.operadora;
-    novaLinha.insertCell(3).innerText = entrada.velocidade;
-    novaLinha.insertCell(4).innerText = entrada.fotoRack;
-            novaLinha.insertCell(3).innerText = entrada.precisaAPs;
-            novaLinha.insertCell(4).innerText = entrada.quantidadeAPs;
-        }
+    function limparCampos() {
+      document.getElementById("escola").value = "";
+      document.getElementById("sdwan").value = "Sim";
+      document.getElementById("operadora").value = "";
+      document.getElementById("velocidade").value = "";
+      document.getElementById("fotoRack").value = "";
+      document.getElementById("precisaAPs").value = "Não";
+      document.getElementById("quantidadeAPs").value = 0;
+      document.getElementById("quantidadeAPs").disabled = true;
+    }
 
-        function limparCampos() {
-            document.getElementById("escola").value = "";
-            document.getElementById("sdwan").value = "Sim";
-            document.getElementById("fotoRack").value = "";
-            document.getElementById("precisaAPs").value = "Não";
-            document.getElementById("quantidadeAPs").value = 0;
-            document.getElementById("quantidadeAPs").disabled = true;
-        }
+    function exportarExcel() {
+      const planilha = entradas.map(item => ({
+        "Escola": item.escola,
+        "SD-WAN": item.sdwan,
+        "Operadora": item.operadora,
+        "Velocidade (Mbps)": item.velocidade,
+        "Foto do Rack": item.fotoRack,
+        "Precisa de APs": item.precisaAPs,
+        "Qtd. APs": item.quantidadeAPs
+      }));
 
-        function exportarExcel() {
-            const planilha = entradas.map(item => ({
-                "Escola": item.escola,
-                "SD-WAN": item.sdwan,
-                "Operadora": item.operadora,
-                "Velocidade (Mbps)": item.velocidade,
-                "Foto do Rack": item.fotoRack,
-                "Precisa de APs": item.precisaAPs,
-                "Qtd. APs": item.quantidadeAPs
-            }));
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(planilha);
+      XLSX.utils.book_append_sheet(wb, ws, "Relatório Escolas");
+      XLSX.writeFile(wb, "relatorio_escolas.xlsx");
+    }
 
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.json_to_sheet(planilha);
-            XLSX.utils.book_append_sheet(wb, ws, "Relatório Escolas");
-            XLSX.writeFile(wb, "relatorio_escolas.xlsx");
-        }
-
-        function alternarModo() {
-            document.body.classList.toggle("dark-mode");
-        }
-    </script>
+    function alternarModo() {
+      document.body.classList.toggle("dark-mode");
+    }
+  </script>
 </body>
 </html>
