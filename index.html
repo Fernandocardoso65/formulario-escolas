@@ -2,223 +2,175 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Verificação de Escolas</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulário das Escolas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-color: #f0f0f0;
-      --text-color: #111;
-      --container-bg: #fff;
-      --table-header: #eee;
-      --button-bg: #28a745;
+    body {
+      font-family: 'Inter', sans-serif;
     }
     body.dark-mode {
-      --bg-color: #121212;
-      --text-color: #f5f5f5;
-      --container-bg: #1e1e1e;
-      --table-header: #333;
-      --button-bg: #2ecc71;
+      background-color: #121212 !important;
+      color: #f1f1f1 !important;
     }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 20px;
+
+    .dark-mode .card {
+      background-color: #1e1e1e !important;
+      color: #f1f1f1 !important;
     }
-    .container {
-      background-color: var(--container-bg);
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      max-width: 700px;
-      margin: auto;
+
+    .dark-mode .form-control,
+    .dark-mode .form-select {
+      background-color: #2c2c2c;
+      color: #f1f1f1;
+      border-color: #444;
     }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
+
+    .dark-mode .btn-outline-primary {
+      color: #ffffff;
+      border-color: #888;
     }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
+
+    .dark-mode .btn-outline-primary:hover {
+      background-color: #444;
+      border-color: #aaa;
     }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background-color: var(--container-bg);
-      color: var(--text-color);
+
+    .btn {
+      transition: all 0.2s ease-in-out;
     }
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 15px;
-      border: none;
-      border-radius: 6px;
-      background-color: var(--button-bg);
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      opacity: 0.9;
-    }
-    .toggle-mode {
-      margin-top: 15px;
-      text-align: center;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 40px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: center;
-    }
-    th {
-      background-color: var(--table-header);
+
+    .card {
+      transition: background-color 0.3s ease;
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <h2>Formulário de Verificação das Escolas</h2>
-
-    <label for="escola">Nome da Escola:</label>
-    <input type="text" id="escola" placeholder="Digite o nome da escola" />
-
-    <label for="sdwan">SD-WAN está ativo?</label>
-    <select id="sdwan">
-      <option value="Sim">Sim</option>
-      <option value="Não">Não</option>
-    </select>
-
-    <label for="operadora">Operadora do Segundo Link (SD-WAN):</label>
-    <input type="text" id="operadora" placeholder="Ex: Vivo, Claro, etc." />
-
-    <label for="velocidade">Velocidade do Link (Mbps):</label>
-    <input type="number" id="velocidade" placeholder="Ex: 100" />
-
-    <label for="fotoRack">Foto do Rack:</label>
-    <input type="file" id="fotoRack" accept="image/*" />
-
-    <label for="precisaAPs">Necessita de APs?</label>
-    <select id="precisaAPs" onchange="toggleQuantidadeAPs()">
-      <option value="Não">Não</option>
-      <option value="Sim">Sim</option>
-    </select>
-
-    <label for="quantidadeAPs">Quantidade de APs:</label>
-    <input type="number" id="quantidadeAPs" min="0" value="0" />
-
-    <button onclick="salvarEntrada()">💾 Salvar Entrada</button>
-    <button onclick="exportarExcel()">📤 Exportar para Excel</button>
-
-    <div class="toggle-mode">
-      <button onclick="alternarModo()">🌓 Alternar Modo Claro/Escuro</button>
+<body class="bg-light text-dark" id="main-body">
+  <div class="container py-5">
+    <div class="card shadow-lg rounded-4 border-0">
+      <div class="card-header text-center text-white bg-gradient" style="background: linear-gradient(135deg, #007bff, #6610f2); border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+        <h4 class="mb-0"><i class="bi bi-building"></i> Verificação das Escolas</h4>
+      </div>
+      <div class="card-body p-4">
+        <form id="escolaForm">
+          <div class="mb-3">
+            <label class="form-label">🏫 Nome da Escola:</label>
+            <input type="text" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">🔌 SD-WAN está ativo?</label>
+            <select class="form-select">
+              <option>Sim</option>
+              <option>Não</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">📡 Operadora do Segundo Link (SD-WAN):</label>
+            <input type="text" class="form-control" placeholder="Ex: Vivo, Claro..." />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">⚡ Velocidade do Link (Mbps):</label>
+            <input type="number" class="form-control" placeholder="Ex: 100" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">🖼️ Foto do Rack:</label>
+            <input type="file" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">📶 Necessita de APs?</label>
+            <select class="form-select">
+              <option>Sim</option>
+              <option>Não</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">🔢 Quantidade de APs:</label>
+            <input type="number" class="form-control" min="0" />
+          </div>
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-save-fill"></i> Salvar</button>
+            <button type="button" class="btn btn-outline-primary" onclick="exportarExcel()"><i class="bi bi-file-earmark-excel"></i> Exportar Excel</button>
+            <button type="button" class="btn btn-outline-danger" id="limparBtn"><i class="bi bi-trash3-fill"></i> Limpar Dados</button>
+            <button type="button" class="btn btn-dark" onclick="alternarTema()"><i class="bi bi-moon-stars-fill"></i> Alternar Tema</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
-  <table id="tabelaDados">
-    <thead>
-      <tr>
-        <th>Escola</th>
-        <th>SD-WAN</th>
-        <th>Operadora</th>
-        <th>Velocidade (Mbps)</th>
-        <th>Foto do Rack</th>
-        <th>Precisa de APs</th>
-        <th>Qtd. APs</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
   <script>
-    const entradas = [];
+    function alternarTema() {
+      const body = document.getElementById("main-body");
+      body.classList.toggle("dark-mode");
+    }
 
-    function toggleQuantidadeAPs() {
-      const precisa = document.getElementById("precisaAPs").value;
-      document.getElementById("quantidadeAPs").disabled = precisa === "Não";
-      if (precisa === "Não") {
-        document.getElementById("quantidadeAPs").value = 0;
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("escolaForm");
+      const inputs = form.querySelectorAll("input, select");
+
+      // Preencher com dados salvos
+      if (localStorage.getItem("formEscola")) {
+        const dados = JSON.parse(localStorage.getItem("formEscola"));
+        inputs.forEach((input, i) => {
+          if (input.type === "file") return;
+          input.value = dados[i] || "";
+        });
       }
-    }
 
-    function salvarEntrada() {
-      const escola = document.getElementById("escola").value;
-      const sdwan = document.getElementById("sdwan").value;
-      const operadora = document.getElementById("operadora").value;
-      const velocidade = document.getElementById("velocidade").value;
-      const precisaAPs = document.getElementById("precisaAPs").value;
-      const quantidadeAPs = document.getElementById("quantidadeAPs").value;
-      const fotoInput = document.getElementById("fotoRack");
-      const fotoNome = fotoInput.files[0] ? fotoInput.files[0].name : "Sem foto";
+      // Salvar dados
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const dados = Array.from(inputs).map((input) => input.type === "file" ? null : input.value);
+        localStorage.setItem("formEscola", JSON.stringify(dados));
+        alert("✅ Dados salvos com sucesso!");
+      });
 
-      const novaEntrada = {
-        escola,
-        sdwan,
-        operadora,
-        velocidade,
-        fotoRack: fotoNome,
-        precisaAPs,
-        quantidadeAPs
-      };
-
-      entradas.push(novaEntrada);
-      adicionarNaTabela(novaEntrada);
-      limparCampos();
-    }
-
-    function adicionarNaTabela(entrada) {
-      const tabela = document.getElementById("tabelaDados").getElementsByTagName("tbody")[0];
-      const novaLinha = tabela.insertRow();
-
-      novaLinha.insertCell(0).innerText = entrada.escola;
-      novaLinha.insertCell(1).innerText = entrada.sdwan;
-      novaLinha.insertCell(2).innerText = entrada.operadora;
-      novaLinha.insertCell(3).innerText = entrada.velocidade;
-      novaLinha.insertCell(4).innerText = entrada.fotoRack;
-      novaLinha.insertCell(5).innerText = entrada.precisaAPs;
-      novaLinha.insertCell(6).innerText = entrada.quantidadeAPs;
-    }
-
-    function limparCampos() {
-      document.getElementById("escola").value = "";
-      document.getElementById("sdwan").value = "Sim";
-      document.getElementById("operadora").value = "";
-      document.getElementById("velocidade").value = "";
-      document.getElementById("fotoRack").value = "";
-      document.getElementById("precisaAPs").value = "Não";
-      document.getElementById("quantidadeAPs").value = 0;
-      document.getElementById("quantidadeAPs").disabled = true;
-    }
+      // Botão Limpar
+      const btnLimpar = document.getElementById("limparBtn");
+      if (btnLimpar) {
+        btnLimpar.addEventListener("click", function () {
+          if (confirm("Deseja realmente limpar os dados salvos?")) {
+            localStorage.removeItem("formEscola");
+            inputs.forEach((input) => {
+              if (input.type !== "file") input.value = "";
+            });
+            alert("🧹 Dados apagados!");
+          }
+        });
+      }
+    });
 
     function exportarExcel() {
-      const planilha = entradas.map(item => ({
-        "Escola": item.escola,
-        "SD-WAN": item.sdwan,
-        "Operadora": item.operadora,
-        "Velocidade (Mbps)": item.velocidade,
-        "Foto do Rack": item.fotoRack,
-        "Precisa de APs": item.precisaAPs,
-        "Qtd. APs": item.quantidadeAPs
-      }));
+      const form = document.getElementById("escolaForm");
+      const inputs = form.querySelectorAll("input, select");
 
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(planilha);
-      XLSX.utils.book_append_sheet(wb, ws, "Relatório Escolas");
-      XLSX.writeFile(wb, "relatorio_escolas.xlsx");
-    }
+      const campos = [
+        "Nome da Escola",
+        "SD-WAN Ativo",
+        "Operadora do Segundo Link",
+        "Velocidade (Mbps)",
+        "Foto do Rack",
+        "Necessita de APs",
+        "Quantidade de APs"
+      ];
 
-    function alternarModo() {
-      document.body.classList.toggle("dark-mode");
+      const dados = Array.from(inputs).map((input) =>
+        input.type === "file" ? "Arquivo selecionado" : input.value
+      );
+
+      let csvContent =
+        "data:text/csv;charset=utf-8," +
+        campos.map((c, i) => `${c};${dados[i] || ""}`).join("\\n");
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "dados_escola.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   </script>
 </body>
