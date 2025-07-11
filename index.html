@@ -2,176 +2,157 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Formulário das Escolas</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Autocomplete Escolas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
+    /* Estilo básico para a lista de sugestões */
+    #lista-sugestoes {
+      border: 1px solid #ced4da;
+      max-height: 150px;
+      overflow-y: auto;
+      position: absolute;
+      background: white;
+      width: 100%;
+      z-index: 1000;
+      border-radius: 0 0 0.375rem 0.375rem; /* para combinar com o input */
     }
-    body.dark-mode {
-      background-color: #121212 !important;
-      color: #f1f1f1 !important;
+    #lista-sugestoes div {
+      padding: 8px;
+      cursor: pointer;
     }
-
-    .dark-mode .card {
-      background-color: #1e1e1e !important;
-      color: #f1f1f1 !important;
+    #lista-sugestoes div:hover {
+      background-color: #e9ecef;
     }
-
-    .dark-mode .form-control,
-    .dark-mode .form-select {
-      background-color: #2c2c2c;
-      color: #f1f1f1;
-      border-color: #444;
-    }
-
-    .dark-mode .btn-outline-primary {
-      color: #ffffff;
-      border-color: #888;
-    }
-
-    .dark-mode .btn-outline-primary:hover {
-      background-color: #444;
-      border-color: #aaa;
-    }
-
-    .btn {
-      transition: all 0.2s ease-in-out;
-    }
-
-    .card {
-      transition: background-color 0.3s ease;
+    .position-relative {
+      position: relative;
     }
   </style>
 </head>
-<body class="bg-light text-dark" id="main-body">
-  <div class="container py-5">
-    <div class="card shadow-lg rounded-4 border-0">
-      <div class="card-header text-center text-white bg-gradient" style="background: linear-gradient(135deg, #007bff, #6610f2); border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
-        <h4 class="mb-0"><i class="bi bi-building"></i> Verificação das Escolas</h4>
-      </div>
-      <div class="card-body p-4">
-        <form id="escolaForm">
-          <div class="mb-3">
-            <label class="form-label">🏫 Nome da Escola:</label>
-            <input type="text" class="form-control" required />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">🔌 SD-WAN está ativo?</label>
-            <select class="form-select">
-              <option>Sim</option>
-              <option>Não</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">📡 Operadora do Segundo Link (SD-WAN):</label>
-            <input type="text" class="form-control" placeholder="Ex: Vivo, Claro..." />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">⚡ Velocidade do Link (Mbps):</label>
-            <input type="number" class="form-control" placeholder="Ex: 100" />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">🖼️ Foto do Rack:</label>
-            <input type="file" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">📶 Necessita de APs?</label>
-            <select class="form-select">
-              <option>Sim</option>
-              <option>Não</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">🔢 Quantidade de APs:</label>
-            <input type="number" class="form-control" min="0" />
-          </div>
-          <div class="d-grid gap-2 mt-4">
-            <button type="submit" class="btn btn-success btn-lg"><i class="bi bi-save-fill"></i> Salvar</button>
-            <button type="button" class="btn btn-outline-primary" onclick="exportarExcel()"><i class="bi bi-file-earmark-excel"></i> Exportar Excel</button>
-            <button type="button" class="btn btn-outline-danger" id="limparBtn"><i class="bi bi-trash3-fill"></i> Limpar Dados</button>
-            <button type="button" class="btn btn-dark" onclick="alternarTema()"><i class="bi bi-moon-stars-fill"></i> Alternar Tema</button>
-          </div>
-        </form>
-      </div>
+<body>
+  <div class="container mt-5">
+    <h2>Escolha a Escola</h2>
+
+    <div class="mb-3 position-relative">
+      <input type="text" id="inputEscola" class="form-control" placeholder="Digite o nome da escola" autocomplete="off" />
+      <div id="lista-sugestoes"></div>
     </div>
   </div>
 
   <script>
-    function alternarTema() {
-      const body = document.getElementById("main-body");
-      body.classList.toggle("dark-mode");
-    }
+    // Lista das escolas (completa, conforme seu texto)
+    const escolas = [
+      "E E Accácio de Vasconcelos Camargo, Prof.",
+      "E E Aggeo Pereira do Amaral Prof.",
+      "E E Altamir Gonçalves Prof.",
+      "E E Amélia Cesar Machado de Araújo Profa.",
+      "E E Ana Cecília Martins Prof.",
+      "E E Antônia Lucchesi",
+      "E E Antônio Cordeiro Prof.",
+      "E E Antônio Miguel Pereira Junior",
+      "E E Antônio Padilha",
+      "E.E Antonio Vieira Campos",
+      "E E Arquiminio Marques da Silva",
+      "E E Arthur Cyrillo Freire",
+      "E E Baltazar Fernandes",
+      "E E Beathris Caixeiro Del Cistia Profª",
+      "E E Brigadeiro Tobias",
+      "CEEJA Professor Norberto Soares Ramos",
+      "E E Diógenes de Almeida Marins Prof.",
+      "E E Dionysio Vieira Prof.",
+      "E E Dulce Esmeralda Basile Ferreira Profª.",
+      "E E Elza Salvestro Bonilha",
+      "E.E Elzide Celestina Souza Pacheco Tunuchi Profª. (Bairro do Eden)",
+      "E E Enéas Proença de Arruda Prof.",
+      "E E Escolástica Rosa de Almeida Profª.",
+      "E E Ezequiel Machado Nascimento Prof.",
+      "E E Fernanda de Camargo Pires Profª",
+      "E E Flavio Gagliardi Prof.",
+      "E E Francisco Camargo Cesar",
+      "E E Francisco Coccaro",
+      "E E Francisco Euphrasio Monteiro",
+      "E E Genesio Machado Prof.",
+      "E E Genezia Izabel Cardoso Mencacci Profª.",
+      "E.E. Geraldo do Espirito Santo Fogaça",
+      "E E Gualberto Moreira Dr.",
+      "E E Guiomar Camolesi Souza",
+      "E E Gumercindo Gonçalves",
+      "E E Hélio Del Cistia",
+      "E E Humberto de Campos",
+      "E E Ida Yolanda Lanzoni de Barros Prof.",
+      "E E Isabel Lopes Monteiro Profª.",
+      "E E Izabel Rodrigues Galvão",
+      "E E João Clímaco de Camargo Pires",
+      "E E João Machado de Araújo",
+      "E E João Rodrigues Bueno",
+      "E E João Soares Mons (Altos do Ipanema)",
+      "E E Joaquim Izidoro Marins Prof.",
+      "E E Jordina Amaral Arruda Profª.",
+      "E E Jorge Madureira",
+      "E E José Odin de Arruda Prof.",
+      "E E José Quevedo Prof.",
+      "E E José Reginato",
+      "E E José Roque Almeida Rosa Prof.",
+      "E E Julia Rios Athayde Profª",
+      "E E Julio Bierrenbach Lima Prof.",
+      "E E Julio Prestes de Albuquerque Dr. (Estadão) e Centro de Línguas",
+      "E E Laila Galep Sacker",
+      "E E Lauro Sanchez Prof.",
+      "E E Luiz Gonzaga de Camargo Fleury Prof.",
+      "E E Luiz Nogueira Martins Senador",
+      "E E Marco Antonio Mencacci Prof.",
+      "E E Maria Cândida de Barros Araújo Profª",
+      "EE Maria Helena Gazzi Bonadio Profª",
+      "E E Maria Ondina de Andrade Profª.",
+      "E E Marina Grohmann Soares Fernandes Profª.",
+      "E E Mário Guilherme Notari",
+      "E E Monteiro Lobato",
+      "E E Nazira Nagib Jorge Murad Rodrigues Profª.",
+      "E E Ossis Salvestrini Mendes Profª.",
+      "E E Ovidio Antônio de Souza Reverendo",
+      "E E Porto Seguro Visconde de",
+      "E E Rafael Orsi Filho Prof.",
+      "E E Renato Sêneca de Sá Fleury Prof.",
+      "E E Roberto Paschoalick Prof.",
+      "E E Roque Conceição Martins Prof.",
+      "E E Rosemary de Mello Moreira Pereira",
+      "E E Sarah Salvestro Prof.",
+      "E.E. Senador Vergueiro",
+      "E E Waldemar de Freitas Rosa Prof.",
+      "E E Wanda Costa Daher Profª.",
+      "E E Wilson Ramos Brandão Prof.",
+      "E E Zelia Dulce de Campos Maia Profª."
+    ];
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const form = document.getElementById("escolaForm");
-      const inputs = form.querySelectorAll("input, select");
+    const inputEscola = document.getElementById('inputEscola');
+    const listaSugestoes = document.getElementById('lista-sugestoes');
 
-      // Preencher com dados salvos
-      if (localStorage.getItem("formEscola")) {
-        const dados = JSON.parse(localStorage.getItem("formEscola"));
-        inputs.forEach((input, i) => {
-          if (input.type === "file") return;
-          input.value = dados[i] || "";
+    inputEscola.addEventListener('input', function() {
+      const texto = this.value.toLowerCase();
+      listaSugestoes.innerHTML = '';
+
+      if (!texto) return;
+
+      // Filtra as escolas que começam com o texto digitado (case insensitive)
+      const filtro = escolas.filter(escola => escola.toLowerCase().startsWith(texto));
+
+      filtro.forEach(escola => {
+        const div = document.createElement('div');
+        div.textContent = escola;
+        div.addEventListener('click', () => {
+          inputEscola.value = escola;
+          listaSugestoes.innerHTML = '';
         });
-      }
-
-      // Salvar dados
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const dados = Array.from(inputs).map((input) => input.type === "file" ? null : input.value);
-        localStorage.setItem("formEscola", JSON.stringify(dados));
-        alert("✅ Dados salvos com sucesso!");
+        listaSugestoes.appendChild(div);
       });
-
-      // Botão Limpar
-      const btnLimpar = document.getElementById("limparBtn");
-      if (btnLimpar) {
-        btnLimpar.addEventListener("click", function () {
-          if (confirm("Deseja realmente limpar os dados salvos?")) {
-            localStorage.removeItem("formEscola");
-            inputs.forEach((input) => {
-              if (input.type !== "file") input.value = "";
-            });
-            alert("🧹 Dados apagados!");
-          }
-        });
-      }
     });
 
-    function exportarExcel() {
-      const form = document.getElementById("escolaForm");
-      const inputs = form.querySelectorAll("input, select");
-
-      const campos = [
-        "Nome da Escola",
-        "SD-WAN Ativo",
-        "Operadora do Segundo Link",
-        "Velocidade (Mbps)",
-        "Foto do Rack",
-        "Necessita de APs",
-        "Quantidade de APs"
-      ];
-
-      const dados = Array.from(inputs).map((input) =>
-        input.type === "file" ? "Arquivo selecionado" : input.value
-      );
-
-      let csvContent =
-        "data:text/csv;charset=utf-8," +
-        campos.map((c, i) => `${c};${dados[i] || ""}`).join("\\n");
-
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "dados_escola.csv");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
+    // Fecha a lista de sugestões ao clicar fora do input
+    document.addEventListener('click', (e) => {
+      if (e.target !== inputEscola) {
+        listaSugestoes.innerHTML = '';
+      }
+    });
   </script>
 </body>
 </html>
